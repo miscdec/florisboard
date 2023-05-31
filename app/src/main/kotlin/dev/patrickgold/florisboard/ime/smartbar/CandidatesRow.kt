@@ -242,7 +242,7 @@ private fun CandidateItem(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = candidate.text.toString(),
+                text = candidate.text,
                 color = style.foreground.solidColor(),
                 fontSize = style.fontSize.spSize(),
                 fontWeight = if (candidate.isEligibleForAutoCommit) FontWeight.Bold else FontWeight.Normal,
@@ -250,9 +250,9 @@ private fun CandidateItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            if (candidate.secondaryText != null) {
+            if (!candidate.secondaryText.isNullOrEmpty()) {
                 Text(
-                    text = candidate.secondaryText!!.toString(),
+                    text = candidate.secondaryText!!,
                     color = style.foreground.solidColor(),
                     fontSize = style.fontSize.spSize() safeTimes 0.6,
                     fontWeight = if (candidate.isEligibleForAutoCommit) FontWeight.Bold else FontWeight.Normal,
