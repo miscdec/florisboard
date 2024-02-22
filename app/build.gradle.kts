@@ -31,9 +31,7 @@ plugins {
 
 android {
     namespace = "dev.patrickgold.florisboard"
-    compileSdk = 33
-    buildToolsVersion = "33.0.2"
-    ndkVersion = "25.2.9519653"
+    compileSdk = 34
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -52,7 +50,7 @@ android {
     defaultConfig {
         applicationId = "dev.patrickgold.florisboard"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 90
         versionName = "0.4.0"
 
@@ -66,22 +64,6 @@ android {
             arg("room.expandProjection", "true")
         }
 
-        externalNativeBuild {
-            cmake {
-                targets("florisboard-native")
-                cppFlags("-std=c++20", "-stdlib=libc++")
-                arguments(
-                    "-DCMAKE_ANDROID_API=" + minSdk.toString(),
-                    "-DICU_ASSET_EXPORT_DIR=" + project.file("src/main/assets/icu4c").absolutePath,
-                    "-DBUILD_SHARED_LIBS=false",
-                    "-DANDROID_STL=c++_static",
-                )
-            }
-        }
-
-        ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
-        }
 
         sourceSets {
             maybeCreate("main").apply {
@@ -106,16 +88,11 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
-    }
-
-    externalNativeBuild {
-        cmake {
-            path("src/main/cpp/CMakeLists.txt")
-        }
     }
 
     buildTypes {
@@ -126,10 +103,7 @@ android {
             isDebuggable = true
             isJniDebuggable = false
 
-            ndk {
-                // For running FlorisBoard on the emulator
-                // abiFilters += listOf("x86", "x86_64")
-            }
+
 
             resValue("mipmap", "floris_app_icon", "@mipmap/ic_app_icon_debug")
             resValue("mipmap", "floris_app_icon_round", "@mipmap/ic_app_icon_debug_round")
@@ -167,10 +141,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
 
-            ndk {
-                // For running FlorisBoard on the emulator
-                abiFilters += listOf("x86", "x86_64")
-            }
         }
     }
 

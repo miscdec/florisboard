@@ -61,14 +61,9 @@ class FlorisApplication : Application() {
     companion object {
         private const val ICU_DATA_ASSET_PATH = "icu4c/icudt.dat"
 
-        private external fun nativeInitICUData(path: NativeStr): Int
+//        private external fun nativeInitICUData(path: NativeStr): Int
 
-        init {
-            try {
-                System.loadLibrary("florisboard-native")
-            } catch (_: Exception) {
-            }
-        }
+
     }
 
     private val prefs by florisPreferenceModel()
@@ -115,7 +110,6 @@ class FlorisApplication : Application() {
     }
 
     fun init() {
-        initICU(this)
         cacheDir?.deleteContentsRecursively()
         prefs.initializeBlocking(this)
         extensionManager.value.init()
@@ -123,27 +117,7 @@ class FlorisApplication : Application() {
         DictionaryManager.init(this)
     }
 
-    fun initICU(context: Context): Boolean {
-        try {
-            val androidAssetManager = context.assets ?: return false
-            val icuTmpDataFile = context.cacheDir.subFile("icudt.dat")
-            icuTmpDataFile.outputStream().use { os ->
-                androidAssetManager.open(ICU_DATA_ASSET_PATH).use { it.copyTo(os) }
-            }
-            val status = nativeInitICUData(icuTmpDataFile.absolutePath.toNativeStr())
-            icuTmpDataFile.delete()
-            return if (status != 0) {
-                flogError { "Native ICU data initializing failed with error code $status!" }
-                false
-            } else {
-                flogInfo { "Successfully loaded ICU data!" }
-                true
-            }
-        } catch (e: Exception) {
-            flogError { e.toString() }
-            return false
-        }
-    }
+
 
     private inner class BootComplete : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
